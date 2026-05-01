@@ -1,0 +1,821 @@
+openapi: 3.0.3
+info:
+  title: NutriTrack API
+  description: |
+    REST API для мобильного приложения NutriTrack — трекинг питания,
+    расчёт КБЖУ, ведение дневника приёмов пищи и контроль веса.
+  version: 1.0.0
+  contact:
+    name: NutriTrack Team
+    email: api@nutritrack.app
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/bubu-981/nt_api/1.0.0
+  - url: https://api.nutritrack.app/v1
+    description: Production server
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+security:
+  - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT токен, полученный после авторизации
+  parameters:
+    DateParam:
+      name: date
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date
+        example: '2026-04-12'
+      description: Дата в формате YYYY-MM-DD
+    SearchQueryParam:
+      name: q
+      in: query
+      schema:
+        type: string
+        example: творог
+      description: Поисковый запрос по названию продукта
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      description: Номер страницы (начиная с 0)
+    SizeParam:
+      name: size
+      in: query
+      schema:
+        type: integer
+        default: 20
+        minimum: 1
+        maximum: 100
+  responses:
+    UnauthorizedError:
+      description: Не авторизован
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequestError:
+      description: Некорректный запрос
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFoundError:
+      description: Ресурс не найден
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Внутренняя ошибка сервера
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    Gender:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+    MealType:
+      type: string
+      enum:
+        - BREAKFAST
+        - LUNCH
+        - DINNER
+        - SNACK
+    ActivityLevel:
+      type: string
+      enum:
+        - LOW
+        - MODERATE
+        - ACTIVE
+        - VERY_ACTIVE
+      description: Уровень активности пользователя
+    ProductCategory:
+      type: string
+      enum:
+        - MEAT
+        - POULTRY
+        - FISH
+        - DAIRY
+        - EGGS
+        - GRAINS
+        - LEGUMES
+        - VEGETABLES
+        - FRUITS
+        - NUTS
+        - OILS
+        - OTHER
+    MealItem:
+      type: object
+      required:
+        - productId
+        - productName
+        - quantity
+      properties:
+        productId:
+          type: string
+          format: uuid
+        productName:
+          type: string
+        quantity:
+          type: number
+          format: double
+          description: Граммы
+        calories:
+          type: integer
+        protein:
+          type: number
+          format: double
+        fat:
+          type: number
+          format: double
+        carbs:
+          type: number
+          format: double
+    MealCreateRequest:
+      type: object
+      required:
+        - date
+        - mealType
+        - items
+      properties:
+        date:
+          type: string
+          format: date
+        mealType:
+          $ref: '#/components/schemas/MealType'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MealItem'
+    MealResponse:
+      type: object
+      required:
+        - id
+        - date
+        - mealType
+        - items
+        - totalCalories
+        - totalProtein
+        - totalFat
+        - totalCarbs
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        mealType:
+          $ref: '#/components/schemas/MealType'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MealItem'
+        totalCalories:
+          type: integer
+        totalProtein:
+          type: number
+          format: double
+        totalFat:
+          type: number
+          format: double
+        totalCarbs:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - caloriesPer100g
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        caloriesPer100g:
+          type: integer
+        proteinPer100g:
+          type: number
+          format: double
+        fatPer100g:
+          type: number
+          format: double
+        carbsPer100g:
+          type: number
+          format: double
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+        isCustom:
+          type: boolean
+          description: Флаг пользовательского продукта
+    ProductCreateRequest:
+      type: object
+      required:
+        - name
+        - caloriesPer100g
+      properties:
+        name:
+          type: string
+        caloriesPer100g:
+          type: integer
+        proteinPer100g:
+          type: number
+          format: double
+        fatPer100g:
+          type: number
+          format: double
+        carbsPer100g:
+          type: number
+          format: double
+        category:
+          $ref: '#/components/schemas/ProductCategory'
+    PageResponse_Product:
+      type: object
+      required:
+        - content
+        - page
+        - size
+        - totalPages
+        - totalElements
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        page:
+          type: integer
+        size:
+          type: integer
+        totalPages:
+          type: integer
+        totalElements:
+          type: integer
+    UserResponse:
+      type: object
+      required:
+        - id
+        - username
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+        fullName:
+          type: string
+        height:
+          type: integer
+          description: Рост в см
+        birthDate:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/Gender'
+        activityLevel:
+          $ref: '#/components/schemas/ActivityLevel'
+    UserUpdateRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        height:
+          type: integer
+        birthDate:
+          type: string
+          format: date
+        gender:
+          $ref: '#/components/schemas/Gender'
+        activityLevel:
+          $ref: '#/components/schemas/ActivityLevel'
+    DailyStats:
+      type: object
+      required:
+        - date
+        - consumedCalories
+        - targetCalories
+        - consumedProtein
+        - targetProtein
+        - consumedFat
+        - targetFat
+        - consumedCarbs
+        - targetCarbs
+        - completionPercent
+      properties:
+        date:
+          type: string
+          format: date
+        consumedCalories:
+          type: integer
+        targetCalories:
+          type: integer
+        consumedProtein:
+          type: number
+          format: double
+        targetProtein:
+          type: number
+          format: double
+        consumedFat:
+          type: number
+          format: double
+        targetFat:
+          type: number
+          format: double
+        consumedCarbs:
+          type: number
+          format: double
+        targetCarbs:
+          type: number
+          format: double
+        completionPercent:
+          type: number
+          format: double
+    DailyGoal:
+      type: object
+      required:
+        - targetCalories
+        - targetProtein
+        - targetFat
+        - targetCarbs
+      properties:
+        targetCalories:
+          type: integer
+        targetProtein:
+          type: number
+          format: double
+        targetFat:
+          type: number
+          format: double
+        targetCarbs:
+          type: number
+          format: double
+    WeightRecordCreateRequest:
+      type: object
+      required:
+        - date
+        - weight
+      properties:
+        date:
+          type: string
+          format: date
+        weight:
+          type: number
+          format: double
+    WeightRecordResponse:
+      type: object
+      required:
+        - id
+        - date
+        - weight
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        weight:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: VALIDATION_ERROR
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    SuccessResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+paths:
+  /users/me:
+    get:
+      summary: Получить профиль текущего пользователя
+      operationId: getCurrentUser
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Профиль пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Обновить данные текущего пользователя
+      operationId: updateCurrentUser
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: Профиль успешно обновлён
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /users/me/stats:
+    get:
+      summary: Получить статистику потребления за указанную дату
+      operationId: getStatsByDate
+      tags:
+        - User
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DateParam'
+      responses:
+        '200':
+          description: Статистика за указанную дату
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyStats'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /meals:
+    get:
+      summary: Получить все приёмы пищи за дату
+      operationId: getMealsByDate
+      tags:
+        - Meal
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DateParam'
+      responses:
+        '200':
+          description: Список приёмов пищи
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - meals
+                properties:
+                  meals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MealResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Создать новый приём пищи
+      operationId: createMeal
+      tags:
+        - Meal
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MealCreateRequest'
+      responses:
+        '201':
+          description: Приём пищи успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /meals/{id}:
+    get:
+      summary: Получить приём пищи по ID
+      operationId: getMealById
+      tags:
+        - Meal
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Информация о приёме пищи
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MealResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Удалить приём пищи
+      operationId: deleteMeal
+      tags:
+        - Meal
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Приём пищи успешно удалён
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /products:
+    get:
+      summary: Поиск продуктов
+      operationId: searchProducts
+      tags:
+        - Product
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/SearchQueryParam'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Результаты поиска
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse_Product'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Создать пользовательский продукт
+      operationId: createCustomProduct
+      tags:
+        - Product
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+      responses:
+        '201':
+          description: Продукт успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /products/recent:
+    get:
+      summary: Получить недавно использованные продукты
+      operationId: getRecentProducts
+      tags:
+        - Product
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Список недавних продуктов
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse_Product'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /products/{id}:
+    get:
+      summary: Получить продукт по ID
+      operationId: getProductById
+      tags:
+        - Product
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Информация о продукте
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /weight:
+    get:
+      summary: Получить записи веса за период
+      operationId: getWeightRecords
+      tags:
+        - Weight
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Начальная дата периода
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Конечная дата периода
+      responses:
+        '200':
+          description: Список записей веса
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - records
+                properties:
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WeightRecordResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Добавить запись веса
+      operationId: addWeightRecord
+      tags:
+        - Weight
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WeightRecordCreateRequest'
+      responses:
+        '201':
+          description: Запись веса добавлена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeightRecordResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /goals:
+    get:
+      summary: Получить дневные цели по КБЖУ на указанную дату
+      operationId: getDailyGoals
+      tags:
+        - Goal
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DateParam'
+      responses:
+        '200':
+          description: Дневные цели
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyGoal'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Обновить или создать дневные цели на указанную дату
+      operationId: updateDailyGoals
+      tags:
+        - Goal
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DateParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DailyGoal'
+      responses:
+        '200':
+          description: Цели успешно обновлены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyGoal'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
