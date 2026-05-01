@@ -1,0 +1,49 @@
+<mxfile host="app.diagrams.net" modified="2026-05-01T09:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="nutritrack-context" name="Context">
+    <mxGraphModel dx="1280" dy="720" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="2" value="User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="280" width="140" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="3" value="Mobile App&#xa;iOS / Android" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ecfccb;strokeColor=#65a30d;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="260" width="180" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="4" value="Backend API&#xa;Auth, Meals, Goals, Analytics" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ccfbf1;strokeColor=#0f766e;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="580" y="250" width="230" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="PostgreSQL&#xa;Users, Meals, MealItems, Goals" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#fef3c7;strokeColor=#d97706;" parent="1" vertex="1">
+          <mxGeometry x="930" y="80" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="6" value="Elasticsearch&#xa;Product Search" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#fee2e2;strokeColor=#dc2626;" parent="1" vertex="1">
+          <mxGeometry x="930" y="240" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="TimescaleDB&#xa;Weight &amp; Time-Series" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#ede9fe;strokeColor=#7c3aed;" parent="1" vertex="1">
+          <mxGeometry x="930" y="400" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="Redis&#xa;Daily stats cache" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#e0f2fe;strokeColor=#0284c7;" parent="1" vertex="1">
+          <mxGeometry x="930" y="560" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="uses" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="2" target="3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="REST / HTTPS" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="3" target="4" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="11" value="ACID data" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="4" target="5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="12" value="search index" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="4" target="6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="time-series" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="4" target="7" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="aggregates" style="endArrow=block;endFill=1;html=1;strokeColor=#334155;" parent="1" source="4" target="8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

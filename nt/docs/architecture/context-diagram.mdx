@@ -1,0 +1,23 @@
+---
+title: Контекстная диаграмма
+sidebar_position: 2
+description: Редактируемая Draw.io-диаграмма контекста NutriTrack
+---
+
+import Drawio from '@theme/Drawio';
+import contextDiagram from '!!raw-loader!./assets/nutritrack-context.drawio';
+
+# Контекстная диаграмма
+
+Ниже размещена редактируемая схема Draw.io. Она показывает базовый контур MVP и внешние зависимости, которые появятся или расширятся в следующих версиях
+
+<Drawio content={contextDiagram} />
+
+## Что показывает схема
+
+- пользователь работает через мобильное приложение
+- приложение обращается к backend API
+- backend пишет транзакционные данные в PostgreSQL
+- поиск продуктов опирается на индекс Elasticsearch
+- временные ряды и аналитика веса хранятся в TimescaleDB
+- агрегаты и frequently-read статистика могут кэшироваться в Redis

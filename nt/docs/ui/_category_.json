@@ -1,0 +1,8 @@
+{
+  "label": "UX и экраны",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Текущие экраны, маршруты и пользовательские состояния."
+  }
+}
