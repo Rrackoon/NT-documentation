@@ -68,11 +68,23 @@ const config: Config = {
         theme: {
           primaryColor: '#0f766e',
           options: {
+            theme: {
+              spacing: {
+                sectionVertical: 16,
+                sectionHorizontal: 24,
+              },
+              typography: {
+                lineHeight: '1.45em',
+                headings: {
+                  lineHeight: '1.25em',
+                },
+              },
+            },
             hideRequestPayloadSample: true,
             hideSingleRequestSampleTab: true,
             onlyRequiredInSamples: true,
             jsonSampleExpandLevel: 1,
-          },
+          } as any,
         },
       },
     ] satisfies Redocusaurus.PresetEntry,
