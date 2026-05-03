@@ -27,4 +27,4 @@ description: Событийное моделирование ключевого 
 
 ## Ссылка на рабочий артефакт
 
-- [Unidraw: NT Event Storm](https://unidraw.io/app/board/99126c6ddac28a937444?allow_guest=true)
+- [Unidraw: NT Event Storm](https://unidraw.io/app/board/f898d9eaf5bb54763d62?allow_guest=true)
