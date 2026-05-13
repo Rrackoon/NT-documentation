@@ -9,7 +9,7 @@ import simplePlantUML from '@akebifiky/remark-simple-plantuml';
 const config: Config = {
   title: 'NutriTrack Docs',
   tagline: 'Техническая документация по продукту NutriTrack',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/pandaNT.png',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -92,7 +92,7 @@ const config: Config = {
   plugins: [['drawio', {}]],
 
   markdown: {
-      mermaid: true,           // ← Включает поддержку Mermaid
+      mermaid: true,
   },
 
   themes: ['@docusaurus/theme-mermaid'],
@@ -107,7 +107,7 @@ const config: Config = {
       title: 'NutriTrack Docs',
       logo: {
         alt: 'NutriTrack Logo',
-        src: 'img/logo.svg',
+        src: 'img/pandaNT.png',
       },
       items: [
         {

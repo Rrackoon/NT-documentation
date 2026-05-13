@@ -9,9 +9,9 @@
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at top left, rgba(245, 158, 11, 0.28), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.32), transparent 24%),
-    linear-gradient(135deg, #0f172a 0%, #134e4a 45%, #082f49 100%);
+    radial-gradient(circle at top left, rgba(244, 114, 182, 0.25), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(190, 24, 93, 0.22), transparent 25%),
+    linear-gradient(135deg, #3b0a2a 0%, #882f66 45%, #842a4e 100%);
 }
 
 @media screen and (max-width: 996px) {
