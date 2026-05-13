@@ -91,6 +91,12 @@ const config: Config = {
   ],
   plugins: [['drawio', {}]],
 
+  markdown: {
+      mermaid: true,           // ← Включает поддержку Mermaid
+  },
+
+  themes: ['@docusaurus/theme-mermaid'],
+
   themeConfig: {
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
